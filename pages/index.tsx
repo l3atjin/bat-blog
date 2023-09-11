@@ -1,51 +1,23 @@
 import Head from 'next/head';
-import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
-import { getSortedPostsData } from '../lib/posts';
-import Link from 'next/link';
-import Date from '../components/date';
-import { GetStaticProps } from 'next';
+import Image from 'next/image'
+import styles from '../components/layout.module.css';
+import Layout from '../components/layout';
+import Header from '../components/header';
+import About from '../components/about';
+import Projects from '../components/projects';
+import Contact from '../components/contact';
 
-export default function Home({
-  allPostsData,
-}: {
-  allPostsData: {
-    date: string;
-    title: string;
-    id: string;
-  }[];
-}) {
+const name = 'Bat Lamjav';
+const siteTitle = 'Batjin Lamjav';
+
+export default function Home() {
   return (
-    <Layout home>
-      <Head>
-        <title>{siteTitle}</title>
-      </Head>
-      <section className={utilStyles.headingMd}>
-        <p>Welcome to my page! I'm a software engineer. I will be building cool stuff and sharing them here. Stay tuned!</p>
-      </section>
-      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-        <h2 className={utilStyles.headingLg}>Blog</h2>
-        <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              <Link href={`/posts/${id}`}>{title}</Link>
-              <br />
-              <small className={utilStyles.lightText}>
-                <Date dateString={date} />
-              </small>
-            </li>
-          ))}
-        </ul>
-      </section>
+    <Layout>
+      <Header/>
+      <About/>
+      <Projects/>
+      <Contact/>
     </Layout>
   );
 }
-
-export const getStaticProps: GetStaticProps = async () => {
-  const allPostsData = getSortedPostsData();
-  return {
-    props: {
-      allPostsData,
-    },
-  };
-};
