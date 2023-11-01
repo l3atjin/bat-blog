@@ -6,7 +6,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "aws-sdk": "^2.1484.0",
     "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
     "gray-matter": "^4.0.3",
     "next": "latest",
     "react": "18.2.0",
