@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
+import Layout from '../../components/layout';
 // import { SECRET_KEY } from '@env'
 // import { ACCESS_KEY_ID } from '@env'
 
@@ -25,9 +26,6 @@ export default function ImageLabeler() {
       apiVersion: '2006-03-01',
       params: {Bucket: bucketName}
   });
-
-
-  
 
   const onImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -101,17 +99,13 @@ export default function ImageLabeler() {
     
   }, [image])
 
-  
-  
-
   return (
-    <div>
+    <Layout>
+      <h1>Image Labeler Demo</h1>
+      <h3>Instructions: Upload an image of your choice (.png or .jpg)</h3>
       <input type="file" multiple accept="image/*" onChange={onImageChange} />
-      <Image
-        src={imageUrl}
-        alt="Uploaded Picture"
-      />
+      {image && <Image src={imageUrl} width={300} alt="Uploaded Picture"/>}
       {label && <h2>Label: {label}</h2>}
-    </div>
+    </Layout>
   )
 }
