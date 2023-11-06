@@ -1,0 +1,10 @@
+.horizontal_labels {
+  display: flex;
+  gap: 10px; /* Adjust the gap between labels as needed */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.label_header {
+  margin-bottom: 0;
+}

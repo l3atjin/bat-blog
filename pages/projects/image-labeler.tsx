@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Layout from '../../components/layout';
+import styles from './image-labeler.module.css';
 // import { SECRET_KEY } from '@env'
 // import { ACCESS_KEY_ID } from '@env'
 
@@ -9,6 +10,7 @@ export default function ImageLabeler() {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageURL] = useState("");
   const [label, setLabel] = useState(null);
+  const [labels, setLabels] = useState([]);
 
   const bucketRegion = "us-east-2"
   const bucketName = "image-labeler-demo"
@@ -51,12 +53,20 @@ export default function ImageLabeler() {
       if (err) {
         console.log(err, err.stack); // an error occurred
       } else {
-        console.log(data.Body.toString('utf-8')); // successful response
-        const newLabel = data.Body.toString('utf-8');
-        setLabel(newLabel);
+        const jsonData = JSON.parse(data.Body.toString('utf-8'));
+        console.log(jsonData);
+        setLabels(jsonData)
       }
 
     });
+  }
+
+  // Sets the labels given an json object
+  const updateLabels = (data) => {
+    const newLabels = data.map( (el) => {
+      return el["Name"]
+    })
+    setLabels(newLabels);
   }
 
   // Uploads the input image to S3 bucket, then calls for the label
@@ -68,11 +78,11 @@ export default function ImageLabeler() {
         console.log('Image uploaded successfully. Image URL:', data.Location);
 
         // retrieve the image label txt file from the same Bucket
-        const textFileName = image.name.split(".")[0] + ".txt"
-        console.log("text file", textFileName);
+        const fileName = image.name.split(".")[0] + ".json"
+        console.log("json file", fileName);
         const paramsRetrieve = {
           Bucket: "image-labeler-demo", 
-          Key: textFileName
+          Key: fileName
         };
         
         pollForLabel(paramsRetrieve);
@@ -105,7 +115,14 @@ export default function ImageLabeler() {
       <h3>Instructions: Upload an image of your choice (.png or .jpg)</h3>
       <input type="file" multiple accept="image/*" onChange={onImageChange} />
       {image && <Image src={imageUrl} width={300} alt="Uploaded Picture"/>}
-      {label && <h2>Label: {label}</h2>}
+      {labels && <h2 className={styles.label_header}>Top labels are:</h2>}
+      <div className={styles.horizontal_labels}>
+        {
+          labels && labels.map((label) => (
+            <p key={label["Name"]}>{label["Name"]}({Math.round(label["Confidence"] * 100) / 100}%)</p>
+          ))
+        }
+      </div>
     </Layout>
   )
 }
